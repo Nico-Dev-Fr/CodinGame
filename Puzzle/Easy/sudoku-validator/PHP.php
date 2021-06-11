@@ -1,61 +1,40 @@
 <?php
-/**
- * Auto-generated code below aims at helping you parse
- * the standard input according to the problem statement.
- **/
-
-// $W: number of columns.
-// $H: number of rows.
-fscanf(STDIN, "%d %d", $W, $H);
-$arr = [];
-for ($i = 0; $i < $H; $i++)
+$colArr = [];
+$subGridArr = [];
+for ($i = 0; $i < 9; $i++)
 {
-    $LINE = stream_get_line(STDIN, 200 + 1, "\n");// represents a line in the grid and contains W integers. Each integer represents one room of a given type.
-    $arr[$i] = explode(' ', $LINE);
+    $inputs = explode(" ", fgets(STDIN));
+    haveDuplicates($inputs);
+    for ($j = 0; $j < 9; $j++)
+    {   
+        $n = intval($inputs[$j]);
+        
+        if(!array_key_exists($j,$colArr)) $colArr[$j] = [];
+        array_push($colArr[$j], $n);
+
+        $subGridIndex = getSquareIndex($i, $j);
+        if(!array_key_exists($subGridIndex, $subGridArr)) $subGridArr[$subGridIndex] = [];
+        array_push($subGridArr[$subGridIndex], $n);
+    }
 }
-// $EX: the coordinate along the X axis of the exit (not useful for this first mission, but must be read).
-fscanf(STDIN, "%d", $EX);
-
-// game loop
-while (TRUE)
+for ($i = 0; $i < sizeof($colArr); $i++)
 {
-    fscanf(STDIN, "%d %d %s", $XI, $YI, $POS);
-    $type_room = $arr[$YI][$XI];
-    switch(intval($type_room)){ 
-         case 2:
-             if($POS == "LEFT"){$XI ++;}else{$XI --;}
-         break;
- 
-         case 4:
-             if($POS == "RIGHT"){$YI ++;}else{$XI --;}
-         break;
- 
-         case 5:
-             if($POS == "LEFT"){$YI ++;}else{$XI ++;}
-         break;
- 
-         case 6:
-             if($POS == "LEFT"){$XI ++;}else{$XI --;}
-         break;
- 
-         case 10:
-            $XI--;
-         break;
- 
-         case 11:
-            $XI ++;
-         break;
- 
-         case 1:
-         case 3:
-         case 7:
-         case 8:
-         case 9:
-         case 12:
-         case 13:
-            $YI ++;
-         break;
-     }
-     echo $XI.' '.$YI."\n";
+    haveDuplicates($colArr[$i]);
+}
+for ($i = 0; $i < sizeof($subGridArr); $i++)
+{
+    haveDuplicates($subGridArr[$i]);
+}
+echo("true\n");
+
+function getSquareIndex($rowIndex, $colIndex){
+    return intval(floor($rowIndex / 3) * 3 + floor($colIndex / 3));
+}
+function haveDuplicates($arr){
+    $res = array_unique($arr);
+    if(sizeof($res) != sizeof($arr)){
+        echo("false\n");
+        exit();
+    }
 }
 ?>
